@@ -1,54 +1,24 @@
-Penetration Test Report: \[Student Target's Name/VM Name\]  
-Author: \[Justin\]  
-Date of Assessment: \[Date\]  
+Penetration Test Report: \[Andrew (192.168.0.112)\]  
+Author: \[Justin Marlor\]  
+Date of Assessment: \[12/04/2025\]  
 Version: 1.0
 
-[**Executive Summary	1**](#executive-summary)
+# **Executive Summary**
+The purpose of this project was to better understand red team dynamics 
+## **Overview**
 
-[Overview	1](#overview)
+A penetration test was conducted against the target virtual machine to identify and assess security vulnerabilities within its containerized services. Through this assessment, vulnerabilities were discovered that led to the system being compromised. No harm was done but documentation was collected of the penentration testing methods taken to gain access to the system and valuable information.
 
-[High-Level Test Outcomes	1](#high-level-test-outcomes)
+### **NMAP Scanning**
 
-[Overall Risk Rating	2](#overall-risk-rating)
+![Nmap Scan](lab_screenshots/nmap_portscan.PNG)
 
-[Prioritized Recommendations	2](#prioritized-recommendations)
+The target IP was scanned from the msfconsole using the flags -sV and -Pn. These flags allowed us to send an aggressive scan that would bypass the firewall and discover open ports, as well as the services running on them. This scan collected extremely valuable knowledge about the host network. The key takeaways from this scan being that the SSH and Postgresql services were running up to date versions, while the http service was running an outdated version with many known exploits.
 
-[**Test Scope and Methodology	2**](#test-scope-and-methodology)
+### **Overall Risk Rating**
 
-[Scope	2](#scope)
-
-[Methodology	2](#methodology)
-
-[**Detailed Findings	2**](#detailed-findings)
-
-[**Failed Exploit Attempts	3**](#failed-exploit-attempts)
-
-[**Conclusions	3**](#conclusions)
-
-[Summary of Attack Path	3](#summary-of-attack-path)
-
-[Overall Security Posture	4](#overall-security-posture)
-
-[**Appendix	4**](#appendix)
-
-[Tools Used	4](#tools-used)
-
-**Red text are examples, you will need to replace all red-text with your findings and results.**
-
-# **Executive Summary** {#executive-summary}
-
-## **Overview** {#overview}
-
-A penetration test was conducted against the target virtual machine to identify and assess security vulnerabilities within its containerized services. The assessment revealed several security weaknesses, including one critical vulnerability that allowed for remote code execution and full system compromise.
-
-### **High-Level Test Outcomes** {#high-level-test-outcomes}
-
-The test was successful in achieving its objectives. The engagement resulted in root-level access to a container running a vulnerable FTP service. This access could be leveraged to attack other services on the host virtual machine and the broader network.
-
-### **Overall Risk Rating** {#overall-risk-rating}
-
-Overall Risk Rating: CRITICAL  
-The presence of a remotely exploitable vulnerability that grants an attacker administrative control over a service warrants a Critical rating. This single point of failure compromises the security of the entire virtual machine.
+Overall Risk Rating: CRITICAL 
+The presence of this outdated service in the system allows for many different exploitations, compromising the entire network. 
 
 ### **Prioritized Recommendations** {#prioritized-recommendations}
 
@@ -62,7 +32,7 @@ The presence of a remotely exploitable vulnerability that grants an attacker adm
 
 The scope of this penetration test was limited to the virtual machine and its services located at the following IP address:
 
-* **In-Scope Target:** 192.168.1.105  
+* **In-Scope Target:** 192.168.1.112  
 * **Out-of-Scope:** Any other devices on the network were explicitly out of scope. No denial-of-service (DoS) attacks were performed.
 
 ## **Methodology** {#methodology}
@@ -114,8 +84,4 @@ The overall security posture of the virtual machine is very poor. The presence o
 ## **Tools Used** {#tools-used}
 
 * Nmap  
-* Metasploit Framework  
-* Netcat  
-* Burp Suite  
-* Hydra  
-* sqlmap
+* Metasploit Framework
