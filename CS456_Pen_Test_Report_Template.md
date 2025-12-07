@@ -21,7 +21,7 @@ The presence of this outdated service in the system allows for many different ex
 
 ### **MSF exploits**
 
-![MSFexploits](lab_screenshots/Apache Tomcat_MSF_search.PNG)
+![MSFexploits](<lab_screenshots/Apache Tomcat_MSF_search.PNG>)
 
 ![MSFexploits2](<lab_screenshots/Apache Tomcat_MSF_search.2.PNG>)
 
