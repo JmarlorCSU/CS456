@@ -15,10 +15,15 @@ A penetration test was conducted against the target virtual machine to identify 
 
 The target IP was scanned from the msfconsole using the flags -sV and -Pn. These flags allowed us to send an aggressive scan that would bypass the firewall and discover open ports, as well as the services running on them. This scan collected extremely valuable knowledge about the host network. The key takeaways from this scan being that the SSH and Postgresql services were running up to date versions, while the http service was running an outdated version with many known exploits.
 
-### **Overall Risk Rating**
-
-Overall Risk Rating: CRITICAL 
+### **Overall Risk Rating: CRITICAL**
+  
 The presence of this outdated service in the system allows for many different exploitations, compromising the entire network. 
+
+### **MSF exploits**
+
+![MSFexploits](lab_screenshots/Apache Tomcat_MSF_search.PNG)
+
+![MSFexploits2](<lab_screenshots/Apache Tomcat_MSF_search.2.PNG>)
 
 ### **Prioritized Recommendations** {#prioritized-recommendations}
 
