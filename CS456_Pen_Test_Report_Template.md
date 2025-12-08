@@ -58,21 +58,29 @@ The target IP was scanned from the msfconsole using the flags -sV and -Pn. These
 
 ![MSFexploits2](<lab_screenshots/Apache Tomcat_MSF_search.2.PNG>)
 
-**4.1. Attempt 1 reverse TCP shell launch**
+**4.1. Attempt 1 reverse TCP shell launch through mgr_deploy**
 
-![MSFexploits2](<lab_screenshots/tomcat_mgr_upload_failure.PNG>)
+![mgr_deploy](<lab_screenshots/mgr_deploy_failure.PNG>)
 
 * **Service Targeted:** Apache Tomcat web application on Port 8180
-* **Description of Attempt:** This module deploys a WAR file to the Tomcat Manager through the text-based deployment API, not the HTML upload interface. 
-* **Reason for Failure:** The attack did not result in any successful logins after running for a significant duration. This suggests that the accounts either have strong, non-dictionary passwords or that security measures like fail2ban may be in place, though no active blocking was observed. The attack was stopped to avoid potential account lockouts.
+* **Description of Attempt:** This module deploys a WAR file to the Tomcat Manager through the text-based deployment API, allowing an attacker access to a terminal. 
+* **Reason for Failure:** incorrect filepath for payload. 
 
-**4.1. Attempt 2 reverse TCP shell launch**
+**4.2. Attempt 2 reverse TCP shell launch through jsp upload**
 
-![MSFexploits2](<lab_screenshots/jsp_upload_bypass_failure.PNG>)
+![jsp_upload](<lab_screenshots/jsp_upload_bypass_failure.PNG>)
 
 * **Service Targeted:** Apache Tomcat web application on Port 8180 
-* **Description of Attempt:** This exploit uploads a single malicious JSP file instead of a full WAR, bypassing restrictions that block WAR uploads.
-* **Reason for Failure:** While database access was successful, the attempt to escalate to an OS shell failed. This is likely due to restrictive file permissions for the database user (www-data), preventing it from writing a web shell to the necessary directories. The exploit path through the backdoored FTP service was deemed more efficient.
+* **Description of Attempt:** This exploit uploads a single malicious JSP file that will give access to a terminal through the webpage.
+* **Reason for Failure:** 
+
+**4.2. Attempt 3 reverse TCP shell launch through jsp upload**
+
+![mgr_upload](<lab_screenshots/tomcat_mgr_upload_failure.PNG>)
+
+* **Service Targeted:** Apache Tomcat web application on Port 8180 
+* **Description of Attempt:** This module uses tomcats webpage functionality to upload a WAR containing a webshell or meterpreter payload.
+* **Reason for Failure:** 
 
 # **Conclusions** {#conclusions}
 
