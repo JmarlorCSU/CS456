@@ -7,29 +7,20 @@ Version: 1.0
 The purpose of this project was to better understand red team dynamics 
 ## **Overview**
 
-A penetration test was conducted against the target virtual machine to identify and assess security vulnerabilities within its containerized services. Through this assessment, vulnerabilities were discovered that led to the system being compromised. No harm was done but documentation was collected of the penentration testing methods taken to gain access to the system and valuable information.
+A penetration test was conducted against the target virtual machine to identify and assess security vulnerabilities within its containerized services. Through this assessment, vulnerabilities were discovered that led to the system being compromised. Documentation was collected of the penentration testing methods taken to gain access to the system and sensitive information.
 
-### **NMAP Scanning**
 
-![Nmap Scan](lab_screenshots/nmap_portscan.PNG)
+### **High-Level Test Outcomes**
 
-The target IP was scanned from the msfconsole using the flags -sV and -Pn. These flags allowed us to send an aggressive scan that would bypass the firewall and discover open ports, as well as the services running on them. This scan collected extremely valuable knowledge about the host network. The key takeaways from this scan being that the SSH and Postgresql services were running up to date versions, while the http service was running an outdated version with many known exploits.
+The penetration test was successful. During reconnaissance, sensitive user information was discovered, and administrative privileges were obtained on the web server. With this level of access, an attacker could potentially deploy a malicious WAR file or execute arbitrary commands, leading to full system compromise and possible access to the wider network.
 
 ### **Overall Risk Rating: CRITICAL**
   
-The presence of this outdated service in the system allows for many different exploitations, compromising the entire network. 
-
-### **MSF exploits**
-
-![MSFexploits](<lab_screenshots/Apache Tomcat_MSF_search.PNG>)
-
-![MSFexploits2](<lab_screenshots/Apache Tomcat_MSF_search.2.PNG>)
+The presence of an outdate web service in the system allows for many different possible exploitation attacks, which could lead to the entire network being compromised.
 
 ### **Prioritized Recommendations** {#prioritized-recommendations}
 
-1. Immediately update or replace the vulnerable FTP service container (CVE-2011-2523).  
-2. Remediate the SQL Injection vulnerability in the web application to prevent database compromise.  
-3. Enforce a strong password policy for the SSH service to protect against brute-force attacks.
+1. Immediately remove or update the vulnerable Apache Tomcat service, which allows attackers to gain admin level access by the leveraging of hardcoded credentials(CVE-2010-0557). 
 
 # **Test Scope and Methodology** {#test-scope-and-methodology}
 
@@ -46,7 +37,11 @@ The assessment followed a standard penetration testing methodology. First, recon
 
 # **Detailed Findings** {#detailed-findings}
 
-**3.1. Finding 1: Remote Code Execution via Backdoored FTP Service**
+![Nmap Scan](lab_screenshots/nmap_portscan.PNG)
+
+The target IP was scanned from the msfconsole using the flags -sV and -Pn. These flags allowed us to send an aggressive scan that would bypass the firewall and discover open ports, as well as the services running on them. This scan collected extremely valuable knowledge about the host machine. From this scan I discovered three services running on open ports. The SSH and Postgresql services were running up to date versions, while the http service was running an outdated version with many known exploits.
+
+**3.1. Finding 1: Default credentials**
 
 * **Risk Rating:** Critical  
 * **Description:** The containerized FTP service is running vsftpd version 2.3.4, which contains a known backdoor. By sending a specific string as the username during login, an attacker can trigger the backdoor and open a command shell on TCP port 6200 with root privileges.  
@@ -55,23 +50,28 @@ The assessment followed a standard penetration testing methodology. First, recon
   \[Screenshot of terminal showing: nc 192.168.1.105 6200; id; uid=0(root) gid=0(root) groups=0(root)\]  
 * **Remediation Steps:** The container image for the FTP service must be updated to a version of vsftpd that is not vulnerable (any version after 2.3.4). It is recommended to pull the latest official image for the service and redeploy the container.
 
-**(Copy the template above for your next finding)**  
-**3.2. Finding 2:** **(Copy the template above for your next finding)**  
-**3.3. Finding 3:**
-
 # **Failed Exploit Attempts** {#failed-exploit-attempts}
 
-If you could not find and exploit a vulnerability detail the attempts here  
-**4.1. Attempt 1: SSH Brute-Force Attack**
+### **MSF exploits for Tomcat**
 
-* **Service Targeted:** SSH on TCP Port 22  
-* **Description of Attempt:** An automated brute-force attack was initiated against the SSH service using the hydra tool and the rockyou.txt common password list. The attack targeted common usernames such as root, admin, and user.  
+![MSFexploits](<lab_screenshots/Apache Tomcat_MSF_search.PNG>)
+
+![MSFexploits2](<lab_screenshots/Apache Tomcat_MSF_search.2.PNG>)
+
+**4.1. Attempt 1 reverse TCP shell launch**
+
+![MSFexploits2](<lab_screenshots/tomcat_mgr_upload_failure.PNG>)
+
+* **Service Targeted:** Apache Tomcat web application on Port 8180
+* **Description of Attempt:** This module deploys a WAR file to the Tomcat Manager through the text-based deployment API, not the HTML upload interface. 
 * **Reason for Failure:** The attack did not result in any successful logins after running for a significant duration. This suggests that the accounts either have strong, non-dictionary passwords or that security measures like fail2ban may be in place, though no active blocking was observed. The attack was stopped to avoid potential account lockouts.
 
-**4.2. Attempt 2: Unsuccessful Shell via SQL Injection**
+**4.1. Attempt 2 reverse TCP shell launch**
 
-* **Service Targeted:** Web Application on TCP Port 80  
-* **Description of Attempt:** A SQL injection vulnerability was identified on the web application's login page. Using sqlmap, it was possible to bypass authentication and enumerate database names. An attempt was then made to leverage this vulnerability to gain an operating system shell on the container using the \--os-shell command in sqlmap.  
+![MSFexploits2](<lab_screenshots/jsp_upload_bypass_failure.PNG>)
+
+* **Service Targeted:** Apache Tomcat web application on Port 8180 
+* **Description of Attempt:** This exploit uploads a single malicious JSP file instead of a full WAR, bypassing restrictions that block WAR uploads.
 * **Reason for Failure:** While database access was successful, the attempt to escalate to an OS shell failed. This is likely due to restrictive file permissions for the database user (www-data), preventing it from writing a web shell to the necessary directories. The exploit path through the backdoored FTP service was deemed more efficient.
 
 # **Conclusions** {#conclusions}
