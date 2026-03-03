@@ -25,25 +25,24 @@ The penetration test was successful. During reconnaissance, sensitive user infor
   
 The presence of an outdate web service in the system allows for many different possible exploitation attacks, which could lead to the entire network being compromised.
 
-### **Prioritized Recommendations** {#prioritized-recommendations}
+### **Prioritized Recommendations**
 
 1. Immediately remove or update the vulnerable Apache Tomcat service, which allows attackers to gain admin level access by the leveraging of hardcoded credentials(CVE-2010-0557). 
 
-# **Test Scope and Methodology** {#test-scope-and-methodology}
+# **Test Scope and Methodology**
 
-## **Scope** {#scope}
+## **Scope**
 
 The scope of this penetration test was limited to the virtual machine and its services located at the following IP address:
 
 * **In-Scope Target:** 192.168.1.112  
 * **Out-of-Scope:** Any other devices on the network were explicitly out of scope. No denial-of-service (DoS) attacks were performed.
 
-## **Methodology** {#methodology}
+## **Methodology**
 
 The assessment followed a standard penetration testing methodology. First, reconnaissance was performed using Nmap to identify open ports and running services. Next, vulnerabilities were identified in those services using automated scanners and manual analysis. Finally, the identified vulnerabilities were exploited to demonstrate impact.
 
-# **Detailed Findings** {#detailed-findings}
-
+# **Detailed Findings**
 ![Nmap Scan](lab_screenshots/nmap_portscan.PNG)
 
 The target IP was scanned from the msfconsole using the flags -sV and -Pn. These flags allowed us to send an aggressive scan that would bypass the firewall and discover open ports, as well as the services running on them. This scan collected extremely valuable knowledge about the host machine. From this scan I discovered three services running on open ports. The SSH and Postgresql services were running up to date versions, while the http service was running an outdated version with many known exploits.
@@ -57,7 +56,7 @@ The target IP was scanned from the msfconsole using the flags -sV and -Pn. These
   \[Screenshot of terminal showing: nc 192.168.1.105 6200; id; uid=0(root) gid=0(root) groups=0(root)\]  
 * **Remediation Steps:** The container image for the FTP service must be updated to a version of vsftpd that is not vulnerable (any version after 2.3.4). It is recommended to pull the latest official image for the service and redeploy the container.
 
-# **Failed Exploit Attempts** {#failed-exploit-attempts}
+# **Failed Exploit Attempts**
 
 ### **MSF exploits for Tomcat**
 
@@ -89,11 +88,11 @@ The target IP was scanned from the msfconsole using the flags -sV and -Pn. These
 * **Description of Attempt:** This module uses tomcats webpage functionality to upload a WAR containing a webshell or meterpreter payload.
 * **Reason for Failure:** failure to upload JSP file to the system.
 
-# **Conclusions** {#conclusions}
+# **Conclusions**
 
 The penetration test against the target machine demonstrated how outdated or improperly configured services can introduce severe security risks. While multiple exploitation attempts against Apache Tomcat were unsuccessful due to version incompatibilities and restricted upload mechanisms, reconnaissance efforts revealed significant weaknesses—including outdated software and the exposure of management interfaces. These issues, if combined with known exploits or credential leakage, could lead to full system compromise.
 
-## **Summary of Attack Path** {#summary-of-attack-path}
+## **Summary of Attack Path**
 
 ![mgr_deploy](<lab_screenshots/DefaultCredential_LoginAttempt.PNG>)
 ![mgr_deploy](<lab_screenshots/Tomcat_Accessed.PNG>)
@@ -110,11 +109,11 @@ jsp_upload_bypass: Failed because the exploit module targeted a newer Tomcat arc
 
 mgr_upload: Failed because the server did not support the WAR/JSP upload method expected by the module.
 
-## **Overall Security Posture** {#overall-security-posture}
+## **Overall Security Posture**
 
 The target system’s overall security posture is poor and requires immediate remediation. The presence of an outdated Apache Tomcat instance, combined with default credentials, significantly increases the likelihood of compromise. Although exploitation attempts did not succeed in this assessment, they failed due to version mismatches rather than secure configuration. With the correct exploit modules or manual WAR package crafting, remote code execution remains highly feasible.
 
-## **Tools Used** {#tools-used}
+## **Tools Used**
 
 * Nmap  
 * Metasploit Framework
